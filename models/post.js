@@ -1,4 +1,5 @@
 "use strict";
+// const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   const Post = sequelize.define(
     "Post",
@@ -7,10 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-    },
-    {
-      body: DataTypes.STRING,
-      allowNull: false,
+      body: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
     },
     {
       sequelize,
@@ -19,8 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Post.associate = function (models) {
+  Post.associate = function ({ User }) {
     // associations can be defined here
+    this.belongsTo(User, { foreignKey: "userId" });
   };
   return Post;
 };

@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
-        get() {
-          return undefined;
-        },
+        // get() {
+        //   return undefined;
+        // },
       },
       uuid: {
         type: DataTypes.UUID,
@@ -36,8 +36,9 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
-  User.associate = function (models) {
+  User.associate = function ({ Post }) {
     // associations can be defined here
+    this.hasMany(Post, { foreignKey: "userId" });
   };
   return User;
 };
