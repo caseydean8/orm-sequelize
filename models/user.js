@@ -10,14 +10,31 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          // should use status code 400 for these
+          notNull: { msg: "User must have a name" },
+          notEmpty: { msg: "Name can't be empty" },
+        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+
+        validate: {
+          // should use status code 400 for these
+          notNull: { msg: "User must have an email" },
+          notEmpty: { msg: "Email can't be empty" },
+          isEmail: { msg: "Must be a valid email address" },
+        },
       },
       role: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          // should use status code 400 for these
+          notNull: { msg: "User must have a role" },
+          notEmpty: { msg: "Role can't be empty" },
+        },
       },
     },
     {
@@ -32,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     this.hasMany(Post, { foreignKey: "userId", as: "posts" });
   };
 
-// hides id in post routes from user
+  // hides id in post routes from user
   User.prototype.toJSON = function () {
     return { ...this.get(), id: undefined };
   };

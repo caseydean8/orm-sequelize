@@ -22,7 +22,7 @@ app.get("/users/:uuid", async (req, res) => {
   try {
     const user = await User.findOne({
       where: { uuid },
-      include: "posts"
+      include: "posts",
     });
     return res.json(user);
   } catch (err) {
@@ -31,6 +31,39 @@ app.get("/users/:uuid", async (req, res) => {
   }
 });
 
+app.delete("/users/:uuid", async (req, res) => {
+  const uuid = req.params.uuid;
+  try {
+    const user = await User.findOne({
+      where: { uuid },
+    });
+    await user.destroy();
+    return res.json({ message: "User deleted." });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+app.put("/users/:uuid", async (req, res) => {
+  const uuid = req.params.uuid;
+  const { name, email, role } = req.body;
+  try {
+    const user = await User.findOne({
+      where: { uuid },
+    });
+    user.name = name;
+    user.email = email;
+    user.role = role;
+    await user.save();
+    return res.json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+//========= Posts =========== //  
 app.post("/posts", async (req, res) => {
   const { userUuid, body } = req.body;
   try {
@@ -49,7 +82,7 @@ app.get("/posts", async (req, res) => {
     // show user
     const posts = await Post.findAll({
       // include: [{ model: User, as: "user" }],
-      include: "user" // same as above, using alias allows you to shorten include statements
+      include: "user", // same as above, using alias allows you to shorten include statements
     });
     return res.json(posts);
   } catch (err) {
