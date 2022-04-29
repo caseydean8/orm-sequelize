@@ -3,16 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
-      // id field was removed in prior 'migration', brought back manually to add get() to hide id from user.
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-        // get() {
-        //   return undefined;
-        // },
-      },
       uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -34,11 +24,26 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       tableName: "users",
       modelName: "User",
+      // attributes: { exclude: "id" },
+      instanceMethods: {
+        toJSON: function () {
+          var values = Object.assign({}, this.get());
+
+          delete values.id;
+          return values;
+        },
+      },
     }
   );
   User.associate = function ({ Post }) {
     // associations can be defined here
     this.hasMany(Post, { foreignKey: "userId" });
   };
+
+// hides id in post routes from user
+  User.prototype.toJSON = function () {
+    return { ...this.get(), id: undefined };
+  };
+
   return User;
 };
