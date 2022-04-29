@@ -24,20 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       tableName: "users",
       modelName: "User",
-      // attributes: { exclude: "id" },
-      instanceMethods: {
-        toJSON: function () {
-          var values = Object.assign({}, this.get());
-
-          delete values.id;
-          return values;
-        },
-      },
     }
   );
   User.associate = function ({ Post }) {
     // associations can be defined here
-    this.hasMany(Post, { foreignKey: "userId" });
+    // create alias "posts" for easier calls
+    this.hasMany(Post, { foreignKey: "userId", as: "posts" });
   };
 
 // hides id in post routes from user

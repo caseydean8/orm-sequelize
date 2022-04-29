@@ -10,7 +10,7 @@ app.post("/users", async (req, res) => {
 
   try {
     const user = await User.create({ name, email, role });
-return res.json(user);
+    return res.json(user);
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -22,6 +22,7 @@ app.get("/users/:uuid", async (req, res) => {
   try {
     const user = await User.findOne({
       where: { uuid },
+      include: "posts"
     });
     return res.json(user);
   } catch (err) {
@@ -36,6 +37,21 @@ app.post("/posts", async (req, res) => {
     const user = await User.findOne({ where: { uuid: userUuid } });
     const post = await Post.create({ body, userId: user.id });
     return res.json(post);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
+// get all posts
+app.get("/posts", async (req, res) => {
+  try {
+    // show user
+    const posts = await Post.findAll({
+      // include: [{ model: User, as: "user" }],
+      include: "user" // same as above, using alias allows you to shorten include statements
+    });
+    return res.json(posts);
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);

@@ -22,7 +22,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Post.associate = function ({ User }) {
     // associations can be defined here
-    this.belongsTo(User, { foreignKey: "userId" });
+    this.belongsTo(User, { 
+      foreignKey: "userId", 
+      as: "user"
+     });
   };
   Post.prototype.toJSON = function () {
     //hides id and userId field from the post route
